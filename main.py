@@ -7,7 +7,7 @@ import os
 import google.generativeai as genai
 from flask import Flask, jsonify, render_template_string, request
 
-app = Flask(_name_)
+app = Flask(__name__)
 
 # हिंदी और स्पेशल करैक्टर सपोर्ट के लिए
 app.config["JSON_AS_ASCII"] = False
