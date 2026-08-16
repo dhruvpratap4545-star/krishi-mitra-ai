@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-कृषि मित्र AI (Krishi Mitra AI) • संपूर्ण, अखंड एवं पूर्णतः सत्य मास्टर संस्करण v22.0
-प्रवर्त्तक एवं मुख्य परामर्शदाता: ध्रुव प्रताप सिंह जी
+कृषि मित्र AI (Krishi Mitra AI) • पूर्णतः संशोधित एवं सत्य संस्करण v25.0
+प्रवर्त्तक: ध्रुव प्रताप सिंह जी | परामर्शदाता: कृषि मित्र AI
 """
 
 import os
+import google.generativeai as genai
 from flask import Flask, render_template_string, request, jsonify
 
 app = Flask(__name__)
 
-# रेंडर एनवायरनमेंट वेरिएबल से API Key सुरक्षित उठाना
 API_KEY = os.environ.get("API_KEYS")
+
+if API_KEY:
+    genai.configure(api_key=API_KEY)
 
 HTML_PAGE = """
 <!DOCTYPE html>
@@ -18,7 +21,7 @@ HTML_PAGE = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>कृषि मित्र AI - पूर्ण मास्टर संस्करण v22.0</title>
+    <title>कृषि मित्र AI - मास्टर संस्करण v25.0</title>
     <style>
         * { box-sizing: border-box; }
         body { background-color: #0b132b; color: #ffffff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 5px; }
@@ -36,7 +39,7 @@ HTML_PAGE = """
         .btn-purple { background: #7209b7; color: white; }
         .btn-ultimate { background: linear-gradient(45deg, #f72585, #7209b7, #3a86ff); color: white; border: 2px solid #ffb703; font-size: 15px; }
         input, select { width: 100%; padding: 10px; margin: 4px 0; background: #1d3557; color: white; border: 1px solid #457b9d; border-radius: 6px; font-size: 14px; }
-        .status-box { background: #212529; color: #adb5bd; padding: 8px; border-radius: 4px; font-size: 11px; margin-top: 5px; border-left: 4px solid #e76f51; line-height: 1.4; }
+        .status-box { background: #212529; color: #adb5bd; padding: 8px; border-radius: 4px; font-size: 11px; margin-top: 5px; border-left: 4px solid #3a86ff; line-height: 1.4; }
         .rx-box { background: #ffffff; color: #000000; border: 2px solid #f39c12; padding: 12px; border-radius: 6px; margin-top: 6px; }
         .kvk-box { background: #102a43; border: 1px solid #334e68; padding: 8px; border-radius: 6px; font-size: 11px; margin-top: 6px; color: #829ab1; }
     </style>
@@ -47,43 +50,40 @@ HTML_PAGE = """
     <div class="header">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
             <button id="voiceToggleBtn" onclick="toggleVoice()" class="btn btn-voice" style="width: auto; padding: 6px 10px; font-size: 11px;">🔊 आवाज़: चालू</button>
-            <span style="font-size: 10px; color: #e76f51;">⚠️ सेंसर डिस्कनेक्टेड</span>
+            <span style="font-size: 10px; color: #43aa8b;">🌐 असली एआई इंजन एक्टिव</span>
         </div>
-        <h1>कृषि मित्र AI v22.0</h1>
-        <p><b>प्रवर्त्तक एवं मुख्य परामर्शदाता: ध्रुव प्रताप सिंह जी</b></p>
+        <h1>कृषि मित्र AI v25.0</h1>
+        <p><b>प्रवर्त्तक: ध्रुव प्रताप सिंह जी | परामर्शदाता: कृषि मित्र AI</b></p>
     </div>
 
     <!-- महा-शक्ति और वॉइस कमांड सेंटर -->
     <div class="card" style="border: 2px solid #ffb703; background: #16213e;">
-        <h3 style="color: #ffb703;">⚡ ध्रुव AI महा-शक्ति & वॉइस कमांड सेंटर</h3>
+        <h3 style="color: #ffb703;">⚡ कृषि मित्र AI महा-शक्ति & वॉइस सेंटर</h3>
         <p style="font-size: 11px; color: #e0fbfc; margin: 2px 0;">मुख से बोलें या बटन दबाएं</p>
-        
-        <button class="btn btn-ultimate" onclick="speakUltimatePower()">🌟 सॉफ्टवेयर की वास्तविक क्षमता सुनें</button>
-        
-        <div style="display: flex; gap: 5px; margin-top: 6px;">
-            <input type="text" id="voiceCommandInput" placeholder="बोलकर या लिखकर कमांड दें..." style="margin:0;">
-            <button class="btn btn-primary" onclick="startSmartListening()" style="width: 80px; margin:0; padding:10px;">🎤 बोलें</button>
-        </div>
-        <button class="btn btn-success" onclick="executeVoiceCommand()" style="margin-top: 6px;">🚀 कमांड निष्पादित करें</button>
-        
+        <button class="btn btn-ultimate" onclick="speakUltimatePower()">🌟 सॉफ्टवेयर की संपूर्ण क्षमता सुनें</button>
         <div id="ultimateOutput" class="status-box" style="margin-top: 5px; border-left-color: #ffb703;">
-            सत्य आधारित वॉइस इंजन पूरी तरह तैयार है।
+            सत्य आधारित वॉइस इंजन और नेबुला डैशबोर्ड पूरी तरह तैयार हैं।
         </div>
     </div>
 
-    <!-- जीपीएस लोकेशन सिंक -->
-    <div class="card">
-        <h3>📍 GPS लोकेशन स्थिति</h3>
-        <button class="btn btn-success" onclick="updateGPSLocation()">🔄 GPS लोकेशन सिंक जांचें</button>
-        <div id="gpsResult" class="status-box">क्षेत्र: भौतिक जीपीएस सेंसर से लिंक नहीं है।</div>
+    <!-- असली एआई संवाद बॉक्स -->
+    <div class="card" style="border: 2px solid #3a86ff;">
+        <h3>🤖 कृषि मित्र AI — सीधा संवाद (Live AI Chat)</h3>
+        <p style="font-size: 11px; color: #a0aec0; margin: 2px 0;">अपनी समस्या बोलकर या लिखकर पूछें, परामर्शदाता एआई उत्तर देगा।</p>
+        <div style="display: flex; gap: 5px;">
+            <input type="text" id="userInputText" placeholder="जैसे: गेहूं में पीलापन क्यों है?" style="margin:0;">
+            <button class="btn btn-primary" onclick="startListening()" style="width: 80px; margin:0; padding:10px;">🎤 बोलें</button>
+        </div>
+        <button class="btn btn-success" onclick="askRealAI()" style="margin-top: 6px;">✨ एआई से उत्तर प्राप्त करें</button>
+        <div id="micOutput" class="status-box" style="margin-top: 5px;">एआई इंजन पूरी तरह तैयार है।</div>
     </div>
 
     <!-- फसल डॉक्टर, डिजिटल पर्चा और PDF डाउनलोड -->
     <div class="card">
         <h3>🩺 फसल डॉक्टर, डिजिटल पर्चा & PDF</h3>
-        <p style="font-size: 11px; color: #a0aec0; margin: 2px 0;">पत्ती की वास्तविक फोटो अपलोड करें और पूर्ण विवरण के साथ पर्चा PDF बनाएं।</p>
+        <p style="font-size: 11px; color: #a0aec0; margin: 2px 0;">पत्ती की वास्तविक फोटो अपलोड करें और पर्चा PDF बनाएं।</p>
         <input type="file" id="plantImageInput" accept="image/*" capture="environment" style="background:none; border:none; color:#fff; padding:4px 0;">
-        <button class="btn btn-purple" onclick="analyzeRealPlant()">🔍 फोटो विश्लेषण और संपूर्ण पर्चा बनाएं</button>
+        <button class="btn btn-purple" onclick="analyzeRealPlant()">🔍 फोटो विश्लेषण और पर्चा बनाएं</button>
         <div id="plantResult" class="status-box">तस्वीर अपलोड करने पर निदान मिलेगा।</div>
         
         <div class="kvk-box">
@@ -105,7 +105,7 @@ HTML_PAGE = """
         <h3>🧪 NPK मैट्रिक्स & डोज़ कैलकुलेटर</h3>
         <input type="number" id="acreInput" value="1" placeholder="एकड़ संख्या दर्ज करें">
         <button class="btn btn-primary" onclick="calculateNPK()">📐 एकड़ अनुसार सटीक डोज़ निकालें</button>
-        <div id="npkResult" class="status-box">🧪 यूरिया: 45 किग्रा | डीएपी: 30 किग्रा (मानक गणना)</div>
+        <div id="npkResult" class="status-box">🧪 यूरिया: 45 किग्रा | डीएपी: 30 किग्रा</div>
     </div>
 
     <!-- IoT ट्यूबवेल कंट्रोल -->
@@ -128,7 +128,7 @@ HTML_PAGE = """
 
     <div style="text-align: center; font-size: 10px; color: #8d99ae; margin-top: 10px; border-top: 1px solid #334155; padding-top: 8px;">
         ⚖️ वैधानिक चेतावनी: कृषि विज्ञान केंद्र (KVK) एवं नजदीकी सरकारी किसान परामर्श केंद्र से भौतिक सत्यापन अनिवार्य है。<br>
-        <b>© ध्रुव प्रताप सिंह जी - सर्वाधिकार सुरक्षित।</b>
+        <b>प्रवर्त्तक: ध्रुव प्रताप सिंह जी | सर्वाधिकार सुरक्षित।</b>
     </div>
 </div>
 
@@ -138,15 +138,8 @@ HTML_PAGE = """
     function toggleVoice() {
         voiceEnabled = !voiceEnabled;
         let btn = document.getElementById('voiceToggleBtn');
-        if (voiceEnabled) {
-            btn.innerHTML = "🔊 आवाज़: चालू";
-            btn.style.background = "#ffb703";
-            speakText("आवाज़ चालू है।");
-        } else {
-            btn.innerHTML = "🔇 आवाज़: बंद";
-            btn.style.background = "#6c757d";
-            window.speechSynthesis.cancel();
-        }
+        if (voiceEnabled) { btn.innerHTML = "🔊 आवाज़: चालू"; speakText("आवाज़ चालू है।"); } 
+        else { btn.innerHTML = "🔇 आवाज़: बंद"; window.speechSynthesis.cancel(); }
     }
 
     function speakText(text) {
@@ -160,40 +153,51 @@ HTML_PAGE = """
     }
 
     function speakUltimatePower() {
-        let powerText = "किसान भाईयों, कृषि मित्र एआई आधुनिक वैज्ञानिक पद्धतियों से लैस है, जिसके मुख्य प्रवर्त्तक और परामर्शदाता ध्रुव प्रताप सिंह जी हैं। यह सिस्टम पूरी तरह सत्य और पारदर्शी है।";
+        let powerText = "किसान भाईयों, कृषि मित्र एआई आधुनिक वैज्ञानिक पद्धतियों से लैस है। इसके प्रवर्त्तक ध्रुव प्रताप सिंह जी हैं और इसके परामर्शदाता स्वयं कृषि मित्र एआई हैं।";
         document.getElementById('ultimateOutput').innerText = powerText;
         speakText(powerText);
     }
 
-    function startSmartListening() {
+    function startListening() {
         try {
             let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             recognition.lang = 'hi-IN';
-            document.getElementById('ultimateOutput').innerText = "🎤 आवाज सुनी जा रही है... बोलिए!";
+            document.getElementById('micOutput').innerText = "🎤 सुन रहे हैं...";
             speakText("बोलिए, मैं सुन रहा हूँ।");
             recognition.onresult = function(event) {
                 let spokenText = event.results[0][0].transcript;
-                document.getElementById('voiceCommandInput').value = spokenText;
-                executeVoiceCommand();
+                document.getElementById('userInputText').value = spokenText;
+                document.getElementById('micOutput').innerText = "✅ लिखा गया: " + spokenText;
             };
             recognition.start();
         } catch (e) {
-            document.getElementById('ultimateOutput').innerText = "⚠️ ब्राउज़र वॉयस रिकग्निशन सपोर्ट नहीं करता।";
+            document.getElementById('micOutput').innerText = "⚠️ ब्राउज़र माइक सपोर्ट नहीं करता।";
         }
     }
 
-    function executeVoiceCommand() {
-        let cmd = document.getElementById('voiceCommandInput').value.toLowerCase();
-        if (cmd.includes('मन की बात')) speakText("मन की बात का लिंक खोल दिया गया है।");
-        else if (cmd.includes('मंडी')) speakText("गेहूं का सरकारी मंडी भाव 2425 रुपये प्रति क्विंटल है।");
-        else if (cmd.includes('मोटर')) controlMotor();
-        else if (cmd.includes('फसल')) speakText("फसल डॉक्टर के लिए फोटो अपलोड करें।");
-        else speakText("कृषि विज्ञान केंद्र से संपर्क करने की संस्तुति की जाती है।");
-    }
+    function askRealAI() {
+        let question = document.getElementById('userInputText').value;
+        if (!question) {
+            speakText("कृपया पहले अपना सवाल दर्ज करें।");
+            return;
+        }
+        document.getElementById('micOutput').innerText = "⏳ एआई सोच रहा है...";
+        speakText("उत्तर तैयार किया जा रहा है।");
 
-    function updateGPSLocation() {
-        document.getElementById('gpsResult').innerText = "⚠️ GPS रिपोर्ट: भौतिक हार्डवेयर से लिंक नहीं है।";
-        speakText("जीपीएस लोकेशन का भौतिक हार्डवेयर से सीधा संपर्क नहीं है।");
+        fetch('/ask-ai', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({prompt: question})
+        })
+        .then(response => response.json())
+        .then(data => {
+            let ans = data.answer || "⚠️ कोई उत्तर नहीं मिला।";
+            document.getElementById('micOutput').innerText = "💡 एआई उत्तर: " + ans;
+            speakText(ans);
+        })
+        .catch(err => {
+            document.getElementById('micOutput').innerText = "⚠️ सर्वर से कनेक्ट करने में त्रुटि।";
+        });
     }
 
     function analyzeRealPlant() {
@@ -216,7 +220,7 @@ HTML_PAGE = """
             let rxHtml = `
                 <div class="rx-box" id="printableRx">
                     <h4 style="color: #d97706; margin: 0 0 4px 0; font-size: 14px; text-align:center;">📜 कृषि मित्र AI - डिजिटल कृषि पर्चा (Rx)</h4>
-                    <p style="font-size: 11px; margin: 2px 0; color: #333;"><b>प्रवर्त्तक एवं परामर्शदाता:</b> ध्रुव प्रताप सिंह जी</p>
+                    <p style="font-size: 11px; margin: 2px 0; color: #333;"><b>प्रवर्त्तक:</b> ध्रुव प्रताप सिंह जी | <b>परामर्शदाता:</b> कृषि मित्र AI</p>
                     <hr style="border:0; border-top:1px solid #ccc; margin:5px 0;">
                     <p style="font-size: 11px; margin: 2px 0; color: #333;"><b>🩺 रोग निदान:</b> फंगस संक्रमण (फोटो आधारित विश्लेषण)</p>
                     <p style="font-size: 11px; margin: 2px 0; color: #333;"><b>💊 सुझाई गई दवा/सुझाव:</b> मैंकोजेब 75% डब्लूपी का घोल बनाकर छिड़काव करें।</p>
@@ -270,6 +274,20 @@ HTML_PAGE = """
 @app.route('/')
 def home():
     return render_template_string(HTML_PAGE)
+
+@app.route('/ask-ai', methods=['POST'])
+def ask_ai():
+    try:
+        data = request.get_json()
+        user_prompt = data.get('prompt', '')
+        if not API_KEY:
+            return jsonify({"answer": "त्रुटि: रेंडर में API_KEYS सेट नहीं है।"})
+        
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        response = model.generate_content("आप कृषि मित्र एआई हैं और एक कृषि विशेषज्ञ के रूप में काम कर रहे हैं। किसान के इस सवाल का सरल हिंदी में सटीक और सत्य उत्तर दें: " + user_prompt)
+        return jsonify({"answer": response.text})
+    except Exception as e:
+        return jsonify({"answer": "एआई से कनेक्ट होने में तकनीकी समस्या आई है।"})
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))
