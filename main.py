@@ -1,19 +1,28 @@
-# -*- coding: utf-8 -*-
+# -- coding: utf-8 --
 """
-कृषि मित्र AI (Krishi Mitra AI) • पूर्णतः संशोधित एवं सत्य संस्करण v25.0
-प्रवर्त्तक: ध्रुव प्रताप सिंह जी | परामर्शदाता: कृषि मित्र AI
+प्रवर्तक: ध्रुव प्रताप सिंह जी | परामर्शदाता: कृषि मित्र AI
 """
 
 import os
 import google.generativeai as genai
-from flask import Flask, render_template_string, request, jsonify
+from flask import Flask, jsonify, render_template_string, request
 
-app = Flask(__name__)
+app = Flask(_name_)
 
-API_KEY = os.environ.get("API_KEYS")
+# हिंदी और स्पेशल करैक्टर सपोर्ट के लिए
+app.config["JSON_AS_ASCII"] = False
+
+# एआई की कॉन्फ़िगरेशन (रेंडर के की-नेम को सटीक पकड़ने के लिए)
+API_KEY = (
+    os.environ.get("API_KEYS")
+    or os.environ.get("API_KEY")
+    or os.environ.get("GEMINI_API_KEY")
+)
 
 if API_KEY:
-    genai.configure(api_key=API_KEY)
+  genai.configure(api_key=API_KEY.strip())
+else:
+  print("CRITICAL ERROR: No API Key found in Environment Variables!")
 
 HTML_PAGE = """
 <!DOCTYPE html>
