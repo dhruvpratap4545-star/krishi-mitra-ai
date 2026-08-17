@@ -299,8 +299,7 @@ def ask_ai():
     )
     return jsonify({"reply": response.text})
   except Exception as e:
-    return jsonify({"reply": f"तकनीकी एरर: {str(e)}"})
-
+    return jsonify({"reply": f"गूगल एआई तकनीकी एरर (API Error): {str(e)}"})
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
