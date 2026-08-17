@@ -284,19 +284,22 @@ HTML_PAGE = """
 def home():
     return render_template_string(HTML_PAGE)
 
-@app.route('/ask-ai', methods=['POST'])
+@app.route("/ask-ai", methods=["POST"])
 def ask_ai():
-    try:
-        data = request.get_json()
-        user_prompt = data.get('prompt', '')
-        if not API_KEY:
-            return jsonify({"answer": "त्रुटि: रेंडर में API_KEYS सेट नहीं है।"})
-        
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content("आप कृषि मित्र एआई हैं और एक कृषि विशेषज्ञ के रूप में काम कर रहे हैं। किसान के इस सवाल का सरल हिंदी में सटीक और सत्य उत्तर दें: " + user_prompt)
-        return jsonify({"answer": response.text})
-    except Exception as e:
-        return jsonify({"answer": "एआई से कनेक्ट होने में तकनीकी समस्या आई है।"})
+  try:
+    data = request.get_json()
+    user_query = data.get("query", "") or data.get("prompt", "")
+
+    if not API_KEY:
+      return jsonify({"reply": "त्रुटि: रेंडर में API_KEYS सेट नहीं है!"})
+
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    response = model.generate_content(
+        f"आप कृषि मित्र AI हैं। एक कृषि विशेषज्ञ के रूप में हिंदी में सटीक और स्पष्ट उत्तर दें: {user_query}"
+    )
+    return jsonify({"reply": response.text})
+  except Exception as e:
+    return jsonify({"reply": f"तकनीकी एरर: {str(e)}"})
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))
