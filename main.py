@@ -293,7 +293,7 @@ def ask_ai():
     if not API_KEY:
       return jsonify({"reply": "त्रुटि: रेंडर में API_KEYS सेट नहीं है!"})
 
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    model = genai.GenerativeModel("gemini-pro")
     response = model.generate_content(
         f"आप कृषि मित्र AI हैं। एक कृषि विशेषज्ञ के रूप में हिंदी में सटीक और स्पष्ट उत्तर दें: {user_query}"
     )
